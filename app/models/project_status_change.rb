@@ -28,6 +28,8 @@ class ProjectStatusChange < ApplicationRecord
   end
 
   def last_persisted_status
-    project.project_status_changes.where.not(id: nil).last.status
+    return "pending" if project.nil?
+
+    project.project_status_changes.where.not(id: nil).latest_status_change.pick(:status) || "pending"
   end
 end
