@@ -1,0 +1,9 @@
+<turbo-stream action="append" target="comments_list">
+  <template>
+    <li class="mt-2 p-2 bg-gray-100 rounded">
+      <p class="font-semibold"><%= @comment.user.name %></p>
+      <p class="text-sm text-gray-600"><%= @comment.content %></p>
+      <p class="text-xs text-gray-400"><%= time_ago_in_words(@comment.created_at) %> ago</p>
+    </li>
+  </template>
+</turbo-stream>

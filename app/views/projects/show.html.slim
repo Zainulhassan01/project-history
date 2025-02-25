@@ -1,0 +1,33 @@
+h1.text-3xl.font-bold = @project.name
+
+p.mt-2.text-gray-600 Status: #{@project.project_status_changes.last.status}
+
+h2.mt-4.text-xl.font-bold Comments
+ul
+  - @comments.each do |comment|
+    li.mt-2.p-2.bg-gray-100.rounded
+      p.font-semibold User Name: #{comment.user.name}
+      p.text-sm.text-gray-600 Comment: #{comment.content}
+      p.text-xs.text-gray-400 = time_ago_in_words(comment.created_at) + " ago"
+
+= form_with model: [@user, @project, Comment.new], url: user_project_comments_path(@user, @project), local: true do |f|
+  .mt-4
+    = f.text_area :content, class: "w-full p-2 border rounded"
+    = f.submit "Add Comment", class: "mt-2 bg-blue-500 text-white p-2 rounded cursor-pointer"
+
+h2.mt-4.text-xl.font-bold Status History
+ul
+  - @status_changes.each do |change|
+    li.mt-2.p-2.bg-gray-100.rounded
+      p.font-semibold = change.user.name
+      p.text-sm.text-gray-600 Changed status from 
+        #{change.prev_status}
+      - if change.prev_status != change.status
+          | to #{change.status}
+      p.text-xs.text-gray-400 = time_ago_in_words(change.created_at) + " ago"
+
+= form_with model: [@user, @project, ProjectStatusChange.new], local: true do |f|
+  .mt-4
+    p Current Status: #{@project.latest_status}
+    = f.select :status, ProjectStatusChange.statuses.keys, {}, class: "p-2 border rounded"
+    = f.submit "Update Status", class: "mt-2 bg-green-500 text-white p-2 rounded cursor-pointer"
